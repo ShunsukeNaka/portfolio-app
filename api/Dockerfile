@@ -1,20 +1,24 @@
 # Step 1: Modules caching
 # コンパイルに必要なモジュールをインストールする
-FROM golang:1.23.4-alpine3.21 AS modules
-WORKDIR /src
+FROM golang:1.23.4-alpine3.21 AS builder
+
+WORKDIR /app
+
 COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod/ \
-    go mod download -x
+RUN go mod download
+
 COPY . .
 
-# Step 2: Server building
-# ソースコードをコンパイルし、/bin/serverにバイナリーを配置する
-FROM modules AS build-server
-RUN --mount=type=cache,target=/go/pkg/mod/ \
-    go build -o /bin/server ./cmd/app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server ./cmd
 
-COPY --from=build-server /bin/server /bin/server
+
+
+FROM alpine:3.21
+
+WORKDIR /app
+
+COPY --from=builder /app/server .
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/bin/server" ]
+ENTRYPOINT [ "./server" ]

@@ -12,7 +12,9 @@ services:
       - api
 
   api:
-    build: ./api
+    build: 
+      context: ./api
+      dockerfile: dockerfile
     container_name: api
     ports:
       - "8080:8080"
