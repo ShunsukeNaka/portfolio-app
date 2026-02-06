@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_API_URL=http://api:8080
     depends_on:
       - api
 
@@ -16,8 +16,10 @@ services:
     container_name: api
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
-      - DB_HOST=db
+      - DB_HOST=xxxxx.neon.tech
       - DB_USER=postgres
       - DB_PASSWORD=pass
       - DB_NAME=app
