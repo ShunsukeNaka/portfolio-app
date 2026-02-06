@@ -1,22 +1,20 @@
-# ベースイメージとして公式のGolangイメージを使用
-FROM golang:1.20-alpine
-
-# 作業ディレクトリを設定
-WORKDIR /app
-
-# Go Modulesの使用を許可（必要な場合）
-# ENV GO111MODULE=on
-
-# ローカルのモジュールキャッシュを最適化（必要な場合）
-# COPY go.mod .
-# COPY go.sum .
-# RUN go mod download
-
-# ソースコードをコンテナにコピー
+# Step 1: Modules caching
+# コンパイルに必要なモジュールをインストールする
+FROM golang:1.23.4-alpine3.21 AS modules
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod/ \
+    go mod download -x
 COPY . .
 
-# アプリケーションをビルド
-RUN go build -o myapp
+# Step 2: Server building
+# ソースコードをコンパイルし、/bin/serverにバイナリーを配置する
+FROM modules AS build-server
+RUN --mount=type=cache,target=/go/pkg/mod/ \
+    go build -o /bin/server ./cmd/app
 
-# 実行可能ファイルをデフォルトのコマンドとして設定
-CMD ["./myapp"]
+COPY --from=build-server /bin/server /bin/server
+
+EXPOSE 8080
+
+ENTRYPOINT [ "/bin/server" ]
