@@ -1,5 +1,3 @@
-# Step 1: Modules caching
-# コンパイルに必要なモジュールをインストールする
 FROM golang:1.23.4-alpine3.21 AS builder
 
 WORKDIR /app
