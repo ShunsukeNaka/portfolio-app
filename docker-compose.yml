@@ -19,8 +19,3 @@ services:
       - "8080:8080"
     env_file:
       - .env
-    environment:
-      - DB_HOST=xxxxx.neon.tech
-      - DB_USER=postgres
-      - DB_PASSWORD=pass
-      - DB_NAME=app
