@@ -1,0 +1,15 @@
+.env
+*.env
+
+vendor/
+
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+*.out
+*.test
+*.prof
