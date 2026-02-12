@@ -11,6 +11,4 @@ COPY . .
 # Tailwindのコンパイルを含むビルドを実行
 RUN npm run build
 
-# RUN npm prune --production
-
 CMD ["npm", "run", "start"]
