@@ -26,7 +26,7 @@ func InitDB() {
 	dsn := os.Getenv("NEON_DB_URL")
 
 	// Connect to the database
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
