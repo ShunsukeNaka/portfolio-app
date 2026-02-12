@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,6 +37,26 @@ func main() {
 		c.JSON(200, gin.H{
 			"message": "Hello World",
 		})
+	})
+
+	r.POST("/users", func(c *gin.Context) {
+		var user User
+		if err := c.ShouldBindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := DB.Create(&user).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusOK, user)
+	})
+
+	r.GET("/users", func(c *gin.Context) {
+		var users []User
+		// 関連する記事(Articles)も一緒に取得
+		DB.Preload("Articles").Find(&users)
+		c.JSON(http.StatusOK, users)
 	})
 
 	// 8080ポートでサーバーを起動
