@@ -39,7 +39,7 @@ func main() {
 		})
 	})
 
-	r.POST("/users", func(c *gin.Context) {
+	r.POST("/api/users", func(c *gin.Context) {
 		var user User
 		if err := c.ShouldBindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -52,7 +52,7 @@ func main() {
 		c.JSON(http.StatusOK, user)
 	})
 
-	r.GET("/users", func(c *gin.Context) {
+	r.GET("/api/users", func(c *gin.Context) {
 		var users []User
 		// 関連する記事(Articles)も一緒に取得
 		DB.Preload("Articles").Find(&users)
