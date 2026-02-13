@@ -23,6 +23,7 @@ jobs:
             cd ~/portfolio-app
             git pull origin main --rebase
             # Docker Composeで再ビルドして起動
-            docker compose up -d --build
+            docker compose build --no-cache
+            docker compose up -d
             # 未使用の古いイメージを削除して容量を節約！
             docker image prune -f
