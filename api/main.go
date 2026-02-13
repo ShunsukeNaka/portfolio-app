@@ -45,6 +45,18 @@ func main() {
 		userRoutes.POST("/", handlers.CreateUser)
 		userRoutes.GET("/", handlers.GetUsers)
 	}
+	// articleRoutes := r.Group("/article")
+	// {
+	// }
+	// likeRoutes := r.Group("/likes")
+	// {
+	// }
+	// commentRoutes := r.Group("/comments")
+	// {
+	// }
+	// shareRoutes := r.Group("/shares")
+	// {
+	// }
 
 	// 8080ポートでサーバーを起動
 	r.Run(":8080")
