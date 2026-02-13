@@ -1,0 +1,28 @@
+name: Deploy to Sakura VPS
+
+on:
+  push:
+    branches:
+      - main  # mainブランチにpushしたときに実行
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Execute remote ssh commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/portfolio-app
+            git pull origin main --rebase
+            # Docker Composeで再ビルドして起動
+            docker compose up -d --build
+            # 未使用の古いイメージを削除して容量を節約
+            docker image prune -f
