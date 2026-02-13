@@ -1,27 +1,28 @@
 package main
 
 import (
+	"api/handlers"
+	"api/models"
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	InitDB()
+	models.InitDB()
 
-	err := DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";").Error
+	err := models.DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";").Error
 	if err != nil {
 		log.Fatalf("Failed to enable UUID extension: %v", err)
 	}
 
-	err = DB.AutoMigrate(
-		&User{},
-		&Article{},
-		&Tag{},
-		&Comment{},
-		&Follow{},
+	err = models.DB.AutoMigrate(
+		&models.User{},
+		&models.Article{},
+		&models.Tag{},
+		&models.Comment{},
+		&models.Follow{},
 	)
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
@@ -39,25 +40,11 @@ func main() {
 		})
 	})
 
-	r.POST("/users", func(c *gin.Context) {
-		var user User
-		if err := c.ShouldBindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		if err := DB.Create(&user).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		}
-		c.JSON(http.StatusOK, user)
-	})
-
-	r.GET("/users", func(c *gin.Context) {
-		var users []User
-		// 関連する記事(Articles)も一緒に取得
-		DB.Preload("Articles").Find(&users)
-		c.JSON(http.StatusOK, users)
-	})
+	userRoutes := r.Group("/users")
+	{
+		userRoutes.POST("/", handlers.CreateUser)
+		userRoutes.GET("/", handlers.GetUsers)
+	}
 
 	// 8080ポートでサーバーを起動
 	r.Run(":8080")

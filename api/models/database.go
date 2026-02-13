@@ -1,5 +1,5 @@
 // Based on https://neon.com/guides/golang-gorm-postgres
-package main
+package models
 
 import (
 	"fmt"
