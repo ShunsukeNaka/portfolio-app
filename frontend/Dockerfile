@@ -15,8 +15,12 @@ RUN npm run build
 
 FROM httpd:2.4-alpine
 
-COPY ./my-httpd.conf /usr/local/apache2/conf/httpd.conf
-
+RUN sed -i 's/#LoadModule proxy_module/LoadModule proxy_module/' /usr/local/apache2/conf/httpd.conf \
+    && sed -i 's/#LoadModule proxy_http_module/LoadModule proxy_http_module/' /usr/local/apache2/conf/httpd.conf \
+    && echo 'ProxyPass /api/ http://api:8080/' >> /usr/local/apache2/conf/httpd.conf \
+    && echo 'ProxyPassReverse /api/ http://api:8080/' >> /usr/local/apache2/conf/httpd.conf \
+    && echo 'ServerName localhost' >> /usr/local/apache2/conf/httpd.conf
+    
 COPY --from=builder /app/out /usr/local/apache2/htdocs/
 
 EXPOSE 80
