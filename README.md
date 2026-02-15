@@ -5,17 +5,17 @@ https://qiita.com/snak81/items/e29d104b8cc4a135748b
 自身が執筆しているQiitaの記事と連動したポートフォリオ用リポジトリです。
 
 # 技術スタック
-## フロントエンド
+#### フロントエンド
 - Next.js
 
-## バックエンド
+#### バックエンド
 - Go (Gin)
 
-## DB
+#### DB
 - PostgreSQL (Neon)
  - GORM
 
-## デプロイ
+#### デプロイ
 - Docker Compose
 - GitHub Actions
 - さくらのVPN (Debian)
