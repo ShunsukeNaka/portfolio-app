@@ -15,6 +15,8 @@ RUN npm run build
 
 FROM httpd:2.4-alpine
 
+COPY ./my-httpd.conf /usr/local/apache2/conf/httpd.conf
+
 COPY --from=builder /app/out /usr/local/apache2/htdocs/
 
 EXPOSE 80
