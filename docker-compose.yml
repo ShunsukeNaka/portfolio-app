@@ -6,8 +6,6 @@ services:
     container_name: frontend
     ports:
       - "80:80"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://api:8080
     env_file:
       - .env
     depends_on:
