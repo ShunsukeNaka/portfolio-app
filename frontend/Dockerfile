@@ -21,6 +21,7 @@ RUN sed -i 's/#LoadModule proxy_module/LoadModule proxy_module/' /usr/local/apac
     && echo 'ProxyPassReverse /api/ http://api:8080/' >> /usr/local/apache2/conf/httpd.conf \
     && echo 'ServerName localhost' >> /usr/local/apache2/conf/httpd.conf
     
+    
 COPY --from=builder /app/out /usr/local/apache2/htdocs/
 
 EXPOSE 80
