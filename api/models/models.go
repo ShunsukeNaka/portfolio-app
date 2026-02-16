@@ -9,6 +9,7 @@ import (
 type User struct {
 	ID               uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Username         string    `gorm:"size:50;not null"`
+	Password         string    `gorm:"not null" json:"-"`
 	Email            string    `gorm:"size:255;unique;not null"`
 	XAccount         string    `gorm:"size:50"`
 	InstagramAccount string    `gorm:"size:50"`
