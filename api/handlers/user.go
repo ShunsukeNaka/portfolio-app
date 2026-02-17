@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -76,8 +77,27 @@ func Login(c *gin.Context) {
 	})
 }
 
+// ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ トークンチェック有 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 func GetMyProfile(c *gin.Context) {
-	id, exists := c.Get("user")
+	id, exists := c.Get("userID")
+
+	if !exitsts {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "認証情報を確認できません"})
+		return
+	}
+
+	userID := id.(uuid.UUID)
+
+	// Articlesも同時に取得
+	var user models.User
+	err := models.DB.Preload("Articles", func(db *gorm.DB) *gorm.DB{
+		return db.Select("title", "user_id")
+	}).First(&user, "id = ?", userID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "ユーザーが見つかりません"})
+		return
+	}
+	
+	c.JSON(http.StatusOK, user)
 }
 
 func GetUsers(c *gin.Context) {
