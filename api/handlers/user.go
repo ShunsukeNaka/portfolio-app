@@ -10,6 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func CreateUser(c *gin.Context) {
@@ -81,7 +82,7 @@ func Login(c *gin.Context) {
 func GetMyProfile(c *gin.Context) {
 	id, exists := c.Get("userID")
 
-	if !exitsts {
+	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "認証情報を確認できません"})
 		return
 	}
@@ -90,13 +91,13 @@ func GetMyProfile(c *gin.Context) {
 
 	// Articlesも同時に取得
 	var user models.User
-	err := models.DB.Preload("Articles", func(db *gorm.DB) *gorm.DB{
+	if err := models.DB.Preload("Articles", func(db *gorm.DB) *gorm.DB {
 		return db.Select("title", "user_id")
 	}).First(&user, "id = ?", userID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "ユーザーが見つかりません"})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, user)
 }
 
